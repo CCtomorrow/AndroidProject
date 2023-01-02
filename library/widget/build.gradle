@@ -3,5 +3,6 @@ apply from : '../../common.gradle'
 
 dependencies {
     // 基础库（不包任何第三方框架）
-    implementation project(':library:base')
+    //implementation project(':library:base')
+    implementation project(':common_base')
 }
