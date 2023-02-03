@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
@@ -24,19 +25,23 @@ import java.util.List;
 import java.util.Random;
 
 /**
- *    author : Android 轮子哥
- *    github : https://github.com/getActivity/AndroidProject
- *    time   : 2018/10/18
- *    desc   : Activity 技术基类
+ * author : Android 轮子哥
+ * github : https://github.com/getActivity/AndroidProject
+ * time   : 2018/10/18
+ * desc   : Activity 技术基类
  */
 public abstract class BaseActivity extends AppCompatActivity
         implements ActivityAction, ClickAction,
         HandlerAction, BundleAction, KeyboardAction {
 
-    /** 错误结果码 */
+    /**
+     * 错误结果码
+     */
     public static final int RESULT_ERROR = -2;
 
-    /** Activity 回调集合 */
+    /**
+     * Activity 回调集合
+     */
     private SparseArray<OnActivityCallback> mActivityCallbacks;
 
     @Override
@@ -54,12 +59,22 @@ public abstract class BaseActivity extends AppCompatActivity
     /**
      * 获取布局 ID
      */
-    protected abstract int getLayoutId();
+    protected int getLayoutId() {
+        return -1;
+    }
+
+    /**
+     * 获取布局view
+     */
+    protected View getLayoutView() {
+        return null;
+    }
 
     /**
      * 初始化控件
      */
-    protected abstract void initView();
+    protected void initView() {
+    }
 
     /**
      * 初始化数据
@@ -73,6 +88,9 @@ public abstract class BaseActivity extends AppCompatActivity
         if (getLayoutId() > 0) {
             setContentView(getLayoutId());
             initSoftKeyboard();
+        } else if (getLayoutView() != null) {
+            setContentView(getLayoutView());
+            initSoftKeyboard();
         }
     }
 
@@ -81,7 +99,7 @@ public abstract class BaseActivity extends AppCompatActivity
      */
     protected void initSoftKeyboard() {
         // 点击外部隐藏软键盘，提升用户体验
-        getContentView().setOnClickListener(v -> {
+        getAndroidContentView().setOnClickListener(v -> {
             // 隐藏软键，避免内存泄漏
             hideKeyboard(getCurrentFocus());
         });
@@ -118,7 +136,7 @@ public abstract class BaseActivity extends AppCompatActivity
     /**
      * 和 setContentView 对应的方法
      */
-    public ViewGroup getContentView() {
+    public ViewGroup getAndroidContentView() {
         return findViewById(Window.ID_ANDROID_CONTENT);
     }
 
@@ -192,8 +210,8 @@ public abstract class BaseActivity extends AppCompatActivity
         /**
          * 结果回调
          *
-         * @param resultCode        结果码
-         * @param data              数据
+         * @param resultCode 结果码
+         * @param data       数据
          */
         void onActivityResult(int resultCode, @Nullable Intent data);
     }

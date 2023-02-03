@@ -25,19 +25,25 @@ import com.hjq.base.action.ResourcesAction;
 import java.util.List;
 
 /**
- *    author : Android 轮子哥
- *    github : https://github.com/getActivity/AndroidProject
- *    time   : 2018/10/18
- *    desc   : Fragment 技术基类
+ * author : Android 轮子哥
+ * github : https://github.com/getActivity/AndroidProject
+ * time   : 2018/10/18
+ * desc   : Fragment 技术基类
  */
 public abstract class BaseFragment<A extends BaseActivity> extends Fragment implements
         ActivityAction, ResourcesAction, HandlerAction, ClickAction, BundleAction, KeyboardAction {
 
-    /** Activity 对象 */
+    /**
+     * Activity 对象
+     */
     private A mActivity;
-    /** 根布局 */
+    /**
+     * 根布局
+     */
     private View mRootView;
-    /** 当前是否加载过 */
+    /**
+     * 当前是否加载过
+     */
     private boolean mLoading;
 
     @SuppressWarnings("unchecked")
@@ -50,14 +56,20 @@ public abstract class BaseFragment<A extends BaseActivity> extends Fragment impl
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (getLayoutId() <= 0) {
-            return null;
-        }
-
         mLoading = false;
-        mRootView = inflater.inflate(getLayoutId(), container, false);
+        mRootView = initRootView(inflater, container);
         initView();
         return mRootView;
+    }
+
+    protected View initRootView(LayoutInflater inflater, ViewGroup container) {
+        View view;
+        if (getLayoutId() > 0) {
+            view = inflater.inflate(getLayoutId(), container, false);
+        } else {
+            view = getLayoutView(inflater, container);
+        }
+        return view;
     }
 
     @Override
@@ -80,14 +92,16 @@ public abstract class BaseFragment<A extends BaseActivity> extends Fragment impl
     /**
      * Fragment 可见回调
      *
-     * @param first                 是否首次调用
+     * @param first 是否首次调用
      */
-    protected void onFragmentResume(boolean first) {}
+    protected void onFragmentResume(boolean first) {
+    }
 
     /**
      * Activity 可见回调
      */
-    protected void onActivityResume() {}
+    protected void onActivityResume() {
+    }
 
     @Override
     public void onDestroyView() {
@@ -138,12 +152,22 @@ public abstract class BaseFragment<A extends BaseActivity> extends Fragment impl
     /**
      * 获取布局 ID
      */
-    protected abstract int getLayoutId();
+    protected int getLayoutId() {
+        return -1;
+    }
+
+    /**
+     * 获取布局view
+     */
+    protected View getLayoutView(LayoutInflater inflater, ViewGroup container) {
+        return null;
+    }
 
     /**
      * 初始化控件
      */
-    protected abstract void initView();
+    protected void initView() {
+    }
 
     /**
      * 初始化数据
